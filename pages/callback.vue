@@ -1,9 +1,8 @@
 <template>
   <section class="container">
-    is authenticated {{authenticated}}
     <div>
-      <h1>callback</h1>
-      <nuxt-link to="/protected">go to protected</nuxt-link>
+      <h1>this is the callback page</h1>
+      <div>are you authenticated?  {{authenticated}}</div>
       <nuxt-link to="/">go to home</nuxt-link>
     </div>
   </section>
@@ -17,19 +16,25 @@ import * as auth from '~/services/auth'
 export default {
   data () {
     return {
-      auth0: new auth0.WebAuth({
-        domain: 'warpedpuppy.auth0.com',
-        clientID: 'loBycCySA9rPtpUYLOS7t1CTyIhrNJBG',
-        redirectUri: 'http://localhost:3000/callback',
-        audience: 'https://warpedpuppy.auth0.com/userinfo',
-        responseType: 'token id_token',
-        scope: 'openid'
-      }),
-      authenticated: false
+      loggedIn: false
     }
   },
+  computed: {
+    ...mapGetters('user', [
+      'authenticated'
+    ])
+  },
+  methods: {
+    ...mapMutations('user', [
+      'CHANGE_AUTHENTICATION'
+    ])
+  },
   mounted: function () {
-    this.authenticated = auth.isAuthenticatedMethod(auth0)
+
+    this.loggedIn = auth.isAuthenticatedMethod()
+    if (this.loggedIn) {
+      this.CHANGE_AUTHENTICATION(true)
+    }
   }
 }
 </script>

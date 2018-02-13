@@ -1,25 +1,12 @@
 <template>
   <section class="container">
     <div>
-      <app-logo/>
-      <nuxt-link to="/protected">go to protected</nuxt-link>
+       <div>are you authenticated?  {{authenticated}}</div>
       <h1 class="title">
-        asdf
+        nuxt and auth0
       </h1>
-      <button @click="login">click me, I dare you</button>
-      <h2 class="subtitle">
-        Nuxt.js project
-      </h2>
-      <div class="links">
-        <a
-          href="https://nuxtjs.org/"
-          target="_blank"
-          class="button--green">Documentation</a>
-        <a
-          href="https://github.com/nuxt/nuxt.js"
-          target="_blank"
-          class="button--grey">GitHub</a>
-      </div>
+      <button @click="logout" v-if="authenticated">log out</button>
+      <button @click="login" v-if="!authenticated">log in</button>
     </div>
   </section>
 </template>
@@ -27,24 +14,41 @@
 <script>
 import AppLogo from '~/components/AppLogo.vue'
 import auth0 from 'auth0-js'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapMutations } from 'vuex'
+import * as auth from '~/services/auth'
+
 export default {
   data () {
     return {
-      auth0: new auth0.WebAuth({
-        domain: 'warpedpuppy.auth0.com',
-        clientID: 'loBycCySA9rPtpUYLOS7t1CTyIhrNJBG',
-        redirectUri: 'http://localhost:3000/callback',
-        audience: 'https://warpedpuppy.auth0.com/userinfo',
-        responseType: 'token id_token',
-        scope: 'openid'
-      })
     }
   },
+  computed: {
+    ...mapGetters('user', [
+      'authenticated'
+    ])
+  },
   methods: {
+    ...mapMutations('user', [
+      'CHANGE_AUTHENTICATION'
+    ]),
     login: function () {
-      this.auth0.authorize()
+      auth.auth0_instance.authorize()
+    },
+    logout: function () {
+      auth.auth0_instance.logout()
+      this.CHANGE_AUTHENTICATION(false)
     }
+  },
+  mounted: function () {
+    console.log('mounted')
+    let that = this;
+    auth.isAuthenticatedMethod().then(function(response){
+      console.log(response)
+      if(response) {
+        console.log(response)
+        that.CHANGE_AUTHENTICATION(true)
+      }
+    })
   },
   components: {
     AppLogo

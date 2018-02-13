@@ -1,14 +1,23 @@
 import auth0 from 'auth0-js'
 
-const handleAuthentication = (auth0) => {
-  auth0.parseHash((err, authResult) => {
+export const auth0_instance =  new auth0.WebAuth({
+  domain: 'warpedpuppy.auth0.com',
+  clientID: 'loBycCySA9rPtpUYLOS7t1CTyIhrNJBG',
+  redirectUri: 'http://localhost:3000/callback',
+  audience: 'https://warpedpuppy.auth0.com/userinfo',
+  responseType: 'token id_token',
+  scope: 'openid'
+})
+
+const handleAuthentication =  () => {
+  auth0_instance.parseHash((err, authResult) => {
     console.log('authResult = ', authResult)
     if (authResult && authResult.accessToken && authResult.idToken) {
-      this.setSession(authResult)
-     // router.replace('home')
+      setSession(authResult)
+      return true;
     } else if (err) {
-    //  router.replace('home')
       console.log(err)
+      return false;
     }
   })
 }
@@ -23,7 +32,7 @@ const setSession = function (authResult) {
   console.log(window.localStorage)
   //this.authNotifier.emit('authChange', { authenticated: true })
 }
-const logout = function () {
+export const logout = function () {
   // Clear Access Token and ID Token from local storage
   window.localStorage.removeItem('access_token')
   window.localStorage.removeItem('id_token')
@@ -33,10 +42,15 @@ const logout = function () {
   // navigate to the home route
   //router.replace('home')
 }
-export const isAuthenticatedMethod =  function (auth0) {
-  handleAuthentication(auth0)
-  // Check whether the current time is past the
-  // Access Token's expiry time
-  let expiresAt = JSON.parse(window.localStorage.getItem('expires_at'))
-  return new Date().getTime() < expiresAt
+export const isAuthenticatedMethod =  async function () {
+
+  let response = await handleAuthentication()
+
+  if(response){
+    let expiresAt = JSON.parse(window.localStorage.getItem('expires_at'))
+    return new Date().getTime() < expiresAt
+  } else {
+    return false
+  }     
+  
 }

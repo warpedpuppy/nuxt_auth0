@@ -12,9 +12,8 @@
 <script>
 import auth0 from 'auth0-js'
 import { mapGetters, mapMutations } from 'vuex'
-//import env from 'dot-env'
-//import EventEmitter from 'EventEmitter'
-// import router from './../router'
+import * as auth from '~/services/auth'
+
 export default {
   data () {
     return {
@@ -26,55 +25,12 @@ export default {
         responseType: 'token id_token',
         scope: 'openid'
       }),
-      authenticated: function(){}
+      authenticated: false
     }
   },
   mounted: function () {
-    this.authenticated = this.isAuthenticatedMethod()
-    //this.authNotifier = new EventEmitter()
-  },
-  methods: {
-    handleAuthentication: function () {
-      this.auth0.parseHash((err, authResult) => {
-        console.log('authResult = ', authResult)
-        if (authResult && authResult.accessToken && authResult.idToken) {
-          this.setSession(authResult)
-         // router.replace('home')
-        } else if (err) {
-        //  router.replace('home')
-          console.log(err)
-        }
-      })
-    },
-    setSession: function (authResult) {
-      // Set the time that the Access Token will expire at
-      let expiresAt = JSON.stringify(
-        authResult.expiresIn * 1000 + new Date().getTime()
-      )
-      window.localStorage.setItem('access_token', authResult.accessToken)
-      window.localStorage.setItem('id_token', authResult.idToken)
-      window.localStorage.setItem('expires_at', expiresAt)
-      console.log(window.localStorage)
-      //this.authNotifier.emit('authChange', { authenticated: true })
-    },
-    logout: function () {
-      // Clear Access Token and ID Token from local storage
-      window.localStorage.removeItem('access_token')
-      window.localStorage.removeItem('id_token')
-      window.localStorage.removeItem('expires_at')
-      this.userProfile = null
-      //this.authNotifier.emit('authChange', false)
-      // navigate to the home route
-      //router.replace('home')
-    },
-    isAuthenticatedMethod: function () {
-      this.handleAuthentication()
-      // Check whether the current time is past the
-      // Access Token's expiry time
-      let expiresAt = JSON.parse(window.localStorage.getItem('expires_at'))
-      return new Date().getTime() < expiresAt
-    }
-}
+    this.authenticated = auth.isAuthenticatedMethod(auth0)
+  }
 }
 </script>
 

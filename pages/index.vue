@@ -27,7 +27,6 @@
 <script>
 import AppLogo from '~/components/AppLogo.vue'
 import auth0 from 'auth0-js'
-import * as api from '~/services/api'
 import { mapGetters } from 'vuex'
 export default {
   data () {

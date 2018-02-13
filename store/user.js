@@ -1,18 +1,14 @@
-export const state = () => {
-  user: null
-}
+export const state = () => ({
+  authenticated: false
+})
 
 export const mutations = {
-  SET_USER: (state, user) => {
-    state.user = user || null
+  CHANGE_AUTHENTICATION: (state, data) => {
+    state.authenticated = data || false
   }
 }
 
 export const getters = {
-  isAuthenticated (state) {
-    return !!state.user
-  },
-  loggedUser (state) {
-    return state.user
-  }
+  authenticated: state => {return state.authenticated }
 }
+export const strict = false

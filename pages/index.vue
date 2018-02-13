@@ -12,7 +12,6 @@
 </template>
 
 <script>
-import AppLogo from '~/components/AppLogo.vue'
 import auth0 from 'auth0-js'
 import { mapGetters, mapMutations } from 'vuex'
 import * as auth from '~/services/auth'
@@ -38,20 +37,6 @@ export default {
       auth.auth0_instance.logout()
       this.CHANGE_AUTHENTICATION(false)
     }
-  },
-  mounted: function () {
-    console.log('mounted')
-    let that = this;
-    auth.isAuthenticatedMethod().then(function(response){
-      console.log(response)
-      if(response) {
-        console.log(response)
-        that.CHANGE_AUTHENTICATION(true)
-      }
-    })
-  },
-  components: {
-    AppLogo
   }
 }
 </script>

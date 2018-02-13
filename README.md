@@ -1,22 +1,11 @@
-# asdf
+# Vue, Nuxt and Auth0
 
-> Nuxt.js project
+First, go to Auth0 (https://manage.auth0.com) and make an account
 
-## Build Setup
+Second, create a file called config.js on the root, and use the data from Auth0 to fill in the object
 
-``` bash
-# install dependencies
-$ npm install # Or yarn install
+Third, npm install
 
-# serve with hot reload at localhost:3000
-$ npm run dev
+Forth, npm run dev
 
-# build for production and launch server
-$ npm run build
-$ npm start
-
-# generate static project
-$ npm run generate
-```
-
-For detailed explanation on how things work, checkout the [Nuxt.js docs](https://github.com/nuxt/nuxt.js).
+:)
